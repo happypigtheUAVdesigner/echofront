@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Echofront</title>
+<meta name="description" content="Echofront: a ricochet arena shooter with Echo ghosts, bots, bosses, 8 modes and online play with friends.">
+<meta name="theme-color" content="#07081a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Game arena"></canvas>
+
+<div id="menu">
+  <header id="topbar"></header>
+  <main id="screen"></main>
+  <nav id="tabs" aria-label="Main">
+    <button data-act="tab" data-r="play"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>Play</button>
+    <button data-act="tab" data-r="online"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke-width="2"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17" fill="none" stroke-width="1.6"/></svg>Online</button>
+    <button data-act="tab" data-r="armory"><svg viewBox="0 0 24 24"><path d="M12 2l8 4.6v9.2L12 21l-8-5.2V6.6z" fill="none" stroke-width="2"/><circle cx="12" cy="11.5" r="3"/></svg>Armory</button>
+    <button data-act="tab" data-r="friends"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.6"/><path d="M2.5 20c.6-4 3.2-6 6.5-6s5.9 2 6.5 6zM15.5 14.6c2.8-.4 5.3 1.2 6 5.4h-4.3"/></svg>Friends<span class="badge" hidden>0</span></button>
+    <button data-act="tab" data-r="missions"><svg viewBox="0 0 24 24"><path d="M5 3h14v18l-7-4-7 4z" fill="none" stroke-width="2"/><path d="M8.5 9.5l2.3 2.3 4.7-4.6" fill="none" stroke-width="2"/></svg>Missions<span class="badge" hidden>0</span></button>
+    <button data-act="tab" data-r="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.6 4-7 8-7s7.2 2.4 8 7z"/></svg>Profile</button>
+  </nav>
+</div>
+
+<div id="controls" hidden>
+  <button id="btnPause" aria-label="Pause"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+  <button id="btnVent" class="cbtn vent" aria-label="Vent heat">VENT</button>
+  <button id="btnAbility" class="cbtn ability" aria-label="Use ability"></button>
+  <button id="btnDash" class="cbtn dash" aria-label="Dash"><svg viewBox="0 0 24 24"><path d="M3 12h11M6 7h9M6 17h9M15 5l6 7-6 7" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+
+<div id="modal" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<button id="terminate" aria-label="Terminate: close this tab now"><svg viewBox="0 0 24 24"><path d="M12 3v9" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg><span>Terminate</span></button>
+
+<script src="vendor/mqtt.min.js"></script>
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/net.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  Game.init(document.getElementById('game'));
+  UI.init();
+  Net.initFriends();
+  Net.connect();
+</script>
+</body>
+</html>
