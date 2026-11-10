@@ -1,9 +1,10 @@
 'use strict';
 // Online layer over a public MQTT relay: presence, friends, invites, cloud save and match rooms.
 const Net = (() => {
-  const BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  // One broker only: a fallback would split friends across two relays that cannot see each other.
+  const BROKERS = ['wss://broker.hivemq.com:8884/mqtt'];
   const B = 'echofront-hpuav/v1';
-  let client = null, connected = false, brokerIdx = 0, everConnected = false;
+  let client = null, connected = false, brokerIdx = 0, everConnected = false, connectMs = 0;
   let myStatus = 'online', currentRoom = '';
   const subs = []; // {topic, fn}
   const presence = {}; // uid -> presence data
@@ -34,12 +35,9 @@ const Net = (() => {
     // The will goes to its own topic so a dropped socket can never overwrite a "terminated" status.
     const will = { topic: `${B}/w/${me()}`, payload: '1', qos: 1, retain: true };
     client = mqtt.connect(url, { clientId: 'ef_' + me() + '_' + U.code(4), keepalive: 20, reconnectPeriod: 3000, connectTimeout: 8000, will, clean: true });
-    const firstTry = setTimeout(() => {
-      if (!everConnected && brokerIdx < BROKERS.length - 1) { brokerIdx++; connect(); }
-    }, 9000);
+    const t0 = Date.now();
     client.on('connect', () => {
-      clearTimeout(firstTry);
-      connected = true; everConnected = true;
+      connected = true; everConnected = true; connectMs = Date.now() - t0;
       const topics = [...new Set(subs.map((s) => s.topic))];
       if (topics.length) client.subscribe(topics, { qos: 0 });
       pub(`w/${me()}`, null, { retain: true, qos: 1 });
@@ -334,7 +332,7 @@ const Net = (() => {
   return {
     connect, on, sub, unsub, pub, setStatus, friendState, terminate, initFriends, addFriend, accept, decline, cancelOut, removeFriend, invite,
     saveCloud, loadCloud, Room,
-    get connected() { return connected; }, get incoming() { return incoming; }, get presence() { return presence; },
+    get connected() { return connected; }, get connectMs() { return connectMs; }, get incoming() { return incoming; }, get presence() { return presence; },
     publishPresence,
   };
 })();
